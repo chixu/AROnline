@@ -17,11 +17,12 @@ public class ScanMenuState:ScanSceneState{
 
 	public override void OnEnter (Hashtable args = null)
 	{
+		StopVideoPanel ();
 		scene.title.text = I18n.Translate (scene.prevSceneName+"_scan_title");
 		scene.description.text = I18n.Translate (scene.prevSceneName+"_scan_desc");
 		PopMenu menu = ScanSceneController.currentTrackableObject.GetComponent<PopMenu> ();
 		//VideoController.instant.videoPlayer.gameObject.SetActive(false);
-		scene.description.gameObject.SetActive (true);
+		scene.ShowDescription();
 		bool showImmediate = args != null;
 		if (showImmediate)
 			menu.ShowMenu ();

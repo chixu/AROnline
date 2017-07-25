@@ -17,6 +17,7 @@ public class ScanSceneController : MonoBehaviour
 	//public Text text;
 	//public MediaPlayer mediaPlayer;
 	//public Material videoMaterial;
+	public GameObject videoPanel;
 	public Text title;
 	public Text description;
 	public GameObject planePrefab;
@@ -238,9 +239,10 @@ public class ScanSceneController : MonoBehaviour
 					string itemSrc = Xml.Attribute (n, "src");
 					string videoPath = Xml.Attribute (n, "videosrc");
 					pmi.subtitlePath = GetAssetsPath (Xml.Attribute (n, "subtitle"), true);
-					if (!string.IsNullOrEmpty (videoPath))
+					if (!string.IsNullOrEmpty (videoPath)) {
 						pmi.videoPath = GetAssetsPath (videoPath);
-					else {
+						planeItem.RegisterClickEvent ();
+					}else {
 						GameObject prefab = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
 						pmi.threeDObject = GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation) as GameObject;
 						pmi.threeDObject.transform.SetParent (tb.gameObject.transform, false);
@@ -262,6 +264,7 @@ public class ScanSceneController : MonoBehaviour
 
 				obj.transform.SetParent (tb.gameObject.transform, false);
 				ApplyItemInfo (obj, Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName));
+				obj.RegisterClickEvent ();
 			}
 			//obj.gameObject.SetActive (true);
 		}
@@ -286,6 +289,16 @@ public class ScanSceneController : MonoBehaviour
 	}
 
 
+	public void ShowDescription(bool show = true){
+		description.gameObject.SetActive (show);
+		VideoController.instant.videoSlider.gameObject.SetActive (!show);
+	}
+
+	public void ShowVideoSlide(){
+		ShowDescription (false);
+	}
+
+
 	public void OnBackClick ()
 	{
 		state.OnBackClick ();
@@ -295,7 +308,7 @@ public class ScanSceneController : MonoBehaviour
 	//		if (!String.IsNullOrEmpty (str))
 	//			text.text += "\n" + str;
 	//	}
-	//	void Update(){
-	//		description.gameObject.SetActive (!VideoController.instant._videoSeekSlider.gameObject.activeSelf);
-	//	}
+	void Update(){
+		state.Update ();
+	}
 }

@@ -135,7 +135,7 @@ namespace Vuforia
 //			{
 //				audio.Stop ();
 //			}
-			if(!ScanSceneController.instant.exited)
+			if(!ScanSceneController.instant.exited && !ScanSceneController.instant.videoPanel.activeSelf)
 				ScanSceneController.instant.SetState ("idle");
 		}
 

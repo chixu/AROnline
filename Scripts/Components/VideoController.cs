@@ -39,6 +39,7 @@ public class VideoController : MonoBehaviour
 
 	public void Stop(){
 		videoSlider.gameObject.SetActive (false);
+		videoPlayer.targetMaterialRenderer = null;
 		//bottomText.gameObject.SetActive (true);
 		videoSlider.value = 0;
 		videoPlayer.frame = 0;
@@ -65,22 +66,24 @@ public class VideoController : MonoBehaviour
 			//AudioSource audio = obj.GetComponent<AudioSource>();
 			//videoPlayer.SetTargetAudioSource (0, audio);
 			videoPlayer.Prepare();
+			Logger.Log("Preparing Video " + path);
 			while (!videoPlayer.isPrepared)
 			{
-				Logger.Log("Preparing Video " + path);
 				yield return null;
 			}
+			videoPlayer.renderMode = VideoRenderMode.MaterialOverride;
 			videoPlayer.targetMaterialRenderer = obj.GetComponent<MeshRenderer>();
 			audioSource.Play ();
 			videoPlayer.Play ();
 		}
 		else
 		{
+			videoPlayer.renderMode = VideoRenderMode.MaterialOverride;
 			VideoController.instant.videoPlayer.targetMaterialRenderer = obj.GetComponent<MeshRenderer>();
 			videoPlayer.Play();
 		}
 		obj.gameObject.SetActive (true);
-		videoSlider.gameObject.SetActive(true);
+		ScanSceneController.instant.ShowVideoSlide();
 		prevPath = path;
 	}
 

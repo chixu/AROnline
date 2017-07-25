@@ -22,6 +22,12 @@ public class ScanIdleState: ScanSceneState
 		scene.title.text = I18n.Translate (scene.prevSceneName+"_scan_title");
 		scene.description.text = I18n.Translate (scene.prevSceneName+"_scan_desc");
 		//VideoController.instant.videoPlayer.gameObject.SetActive(false);
-		scene.description.gameObject.SetActive (true);
+		scene.ShowDescription();
+	}
+
+	public virtual void OnBackClick(){
+		ScanSceneController.instant.exited = true;
+		OnExit ();
+		SceneManager.LoadScene ("Selection");
 	}
 }

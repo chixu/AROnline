@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using System.Xml.Linq;
 using DG.Tweening;
 
-public class ScanMenuVideoState:ScanSceneState{
+public class ScanMenuVideoState:ScanVideoState{
 	private PopMenuItem item;
 	//private bool exited;
 
@@ -39,17 +39,22 @@ public class ScanMenuVideoState:ScanSceneState{
 
 		GameObject curr = item.gameObject;
 		string path = item.videoPath;
-		scene.description.gameObject.SetActive (false);
+		RegisterClick (curr, "menu4");
 		VideoController.instant.Play(curr, path);
     }
 
 	public override void OnExit(){
-		base.OnExit ();
-		scene.description.gameObject.SetActive (true);
+		//base.OnExit ();
+		OnClick click = item.gameObject.GetComponent<OnClick> ();
+		if (click != null) {
+			click.OnClickHandler = null;
+		}
 		VideoController.instant.Stop ();
 	}
 
 	public override void OnBackClick(){
-		ScanSceneController.instant.SetState("menu4", new Hashtable(){{"showImmediate", true}});
+		scene.videoPanel.SetActive (false);
+		scene.SetState("menu4", new Hashtable(){{"showImmediate", true}});
 	}
+
 }

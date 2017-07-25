@@ -37,8 +37,6 @@ public class ScanMenuObjectState:ScanSceneState
 	}
 
 	public override void OnBackClick(){
-
 		ScanSceneController.instant.SetState("menu4", new Hashtable(){{"showImmediate", true}});
-
 	}
 }

@@ -7,10 +7,17 @@ using UnityEngine.UI;
 using System;
 
 public class Configuration : MonoBehaviour {
+	public bool enablePopupVideo = true;
+	public static Configuration instant;
 	public string remoteUrl = "http://www.iyoovr.com/hsyx";
 	public string language = Language.Chinese;
 	public Text message;
 	private string configStr;
+
+
+	void Awake(){
+		Configuration.instant = this;
+	}
 
 	// Use this for initialization
 	void Start () {

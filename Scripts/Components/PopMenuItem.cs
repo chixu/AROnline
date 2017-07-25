@@ -78,16 +78,6 @@ public class PopMenuItem : MonoBehaviour {
 			tick += Time.deltaTime * floatSpeed;
 			this.transform.localPosition = this.transform.localPosition.SetY (origY + Mathf.Sin(tick)* floatAmplitude);
 		}
-//		if (Input.GetMouseButtonDown(0)){ // if left button pressed...
-//			Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-//			RaycastHit hit;
-//			if (Physics.Raycast(ray, out hit, 100)){
-//			// the object identified by hit.transform was clicked
-//			// do whatever you want
-//				Debug.Log(index.ToString() + " is HIT!!!");
-//				hit.
-//			}
-//		}
 	}
 
 	void OnMouseDown(){

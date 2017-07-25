@@ -34,17 +34,20 @@ public class ScanSceneState
 
 	}
 
+	public virtual void Update(){
+
+	}
+
 	public virtual void OnTrackLost(){
 
 	}
 
 	public virtual void OnBackClick(){
-		ScanSceneController.instant.exited = true;
-		OnExit ();
-		SceneManager.LoadScene ("Selection");
+		scene.SetState ("idle");
 	}
 
 	public virtual void OnEnter(Hashtable args = null){
+		StopVideoPanel ();
 		if (ScanSceneController.currentTrackableObject == null)
 			return;
 		CustomTrackableEventHandler cteh = ScanSceneController.currentTrackableObject.GetComponent<CustomTrackableEventHandler> ();
@@ -53,7 +56,25 @@ public class ScanSceneState
 		}
 	}
 
+	protected void StopVideoPanel(){
+		if (ScanSceneController.instant.videoPanel.activeSelf) {
+			ScanSceneController.instant.videoPanel.SetActive (false);
+			VideoController.instant.Stop ();
+		}
+	}
+
 	public virtual void OnExit(){
+		//ScanSceneController.instant.videoPanel.SetActive (false);
 		ScanSceneController.instant.subtitle.Stop ();
+	}
+
+	public void RegisterClickHandler(Action<GameObject> action){
+		if (Configuration.instant.enablePopupVideo) {
+			GameObject curr = ScanSceneController.currentTrackableObject.transform.GetChild(0).gameObject;
+			OnClick click = curr.GetComponent<OnClick> ();
+			if (click != null) {
+				click.OnClickHandler = action;
+			}
+		}
 	}
 }
