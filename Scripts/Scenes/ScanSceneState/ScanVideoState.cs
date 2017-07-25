@@ -73,6 +73,7 @@ public class ScanVideoState:ScanSceneState{
 	public override void OnBackClick(){
 		if (scene.videoPanel.activeSelf) {
 			scene.videoPanel.SetActive (false);
+			videoContainer.SetActive (false);
 			ScanSceneController.instant.SetState ("idle");
 		}else
 			base.OnBackClick ();

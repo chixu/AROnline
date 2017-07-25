@@ -14,12 +14,18 @@ public class SelectionSceneController : MonoBehaviour
 	public OKCancelPanel okCancelPanel;
 	private XElement layout;
 	private List<GameObject> selectionItems;
+	public Text phone;
+	public Text email;
+	public Text contactUs;
 	// Use this for initialization
 	private bool enabled = true;
 
 	void Start ()
 	{
 //		Debug.Log ("Start");
+		contactUs.text = I18n.Translate("select_contactus");
+		email.text = I18n.Translate("select_email");
+		phone.text = I18n.Translate("select_phone");
 		selectionItems = new List<GameObject> ();
 		progressPanel.onCancelHandler = () => {
 			Config.forceBreak = true;
@@ -96,6 +102,7 @@ public class SelectionSceneController : MonoBehaviour
 			progressPanel.Show (total);
 			return;
 		}
+		progressPanel.fileSize = Config.fileSize;
 		progressPanel.Load (idx);
 		if (idx == total) {
 			progressPanel.Hide ();
@@ -119,5 +126,23 @@ public class SelectionSceneController : MonoBehaviour
 	void LayoutLoaded (string str)
 	{
 		layout = XDocument.Parse (str).Root;
+	}
+
+	public void OnEmailClick(){
+		Logger.Log ("OnEmailClick");
+		string[] emails = phone.text.Split (':');
+		if (emails.Length > 1) {
+			string email = emails [1].Trim ();
+			Application.OpenURL ("mailto://" + email);
+		}
+	}
+
+	public void OnPhoneClick(){
+		Logger.Log ("OnPhoneClick");
+		string[] phs = phone.text.Split (':');
+		if (phs.Length > 1) {
+			string ph = phs [1].Trim ();
+			Application.OpenURL ("tel://" + ph);
+		}
 	}
 }

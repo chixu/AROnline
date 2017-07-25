@@ -19,6 +19,7 @@ public class Config
 	public static bool forceBreak = false;
 	private static Action<int, int> fileLoadedHandler;
 	private static XElement tempConfig;
+	public static float fileSize;
 	//public static string status;
 
 	public static string GetPlatformName () {
@@ -39,53 +40,26 @@ public class Config
 		yield return Request.ReadPersistent (url, str => Config.localConfig = XDocument.Parse(str).Root);
 		yield return Request.ReadRemote (url, str => Config.remoteConfig = XDocument.Parse(str).Root);
 		string platform = GetPlatformName ();
+		fileSize = Xml.Float(remoteConfig, "size");
+		List<string> filenames = new List<string> ();
 		if (remoteConfig == null) {
 			Debug.Log ("remoteConfig = null");
 		} else if (localConfig == null ) {
 			Debug.Log ("remoteConfig != null");
-//			var nodes = remoteConfig.Elements ();
-//			int count = 0;
-//			foreach (XElement node in nodes)
-//				count++;
-//			if (fileLoadedHandler != null) {
-//				fileLoadedHandler.Invoke (0, count);
-//			}
-//			int index = 0;
-//			foreach (XElement node in nodes) {
-//				index++;
-//				yield return Request.DownloadFile (node.Value.Replace ("{%platform%}", platform), node.Value.Replace ("{%platform%}", ""));
-//				if (forceBreak) {
-//					yield break;
-//				} else {
-//					if (fileLoadedHandler != null) {
-//						fileLoadedHandler.Invoke (index, count);
-//					}
-//				}
-//			}
-//			//Debug.Log ("remoteConfig: " + remoteConfig.ToString ());
-//			File.WriteAllText (Path.Combine(Application.persistentDataPath,  url), remoteConfig.ToString());
 			var nodes = remoteConfig.Element ("all").Elements();
-			List<string> names = new List<string> ();
 			foreach (XElement node in nodes) {
-				names.Add (node.Value);
+				filenames.Add (node.Value);
 			}
-			yield return LoadFiles (names, url);
 		} else{
 			string localVersion = Xml.Version (localConfig);
 			string preVersion = Xml.Attribute (remoteConfig, "preversion");
 			string remoteVersion = Xml.Version (remoteConfig);
-			float filesize = Xml.Float(remoteConfig, "size");
+			//float filesize = Xml.Float(remoteConfig, "size");
 			if (localVersion != remoteVersion) {
-				if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && filesize > 3) {
-				//if (panel != null && filesize > 3) {
-					yield return panel.Show (string.Format( I18n.Translate ("not_in_wifi"), filesize.ToString()+"M"));
-					if (panel.isCancel)
-						yield break;
-				}
 				var nodes = remoteConfig.Element ("update").Elements();
-				List<string> updates = new List<string> ();
+				//List<string> updates = new List<string> ();
 				foreach (XElement node in nodes) {
-					updates.Add (node.Value);
+					filenames.Add (node.Value);
 				}
 				int idx = url.IndexOf ("/");
 				string path = idx == -1 ? url : url.Substring (0, idx);
@@ -94,9 +68,9 @@ public class Config
 					yield return Request.ReadRemote (path+"/version/" + preVersion +".xml", str => Config.tempConfig = XDocument.Parse(str).Root);
 					if (tempConfig == null) {
 						var all = remoteConfig.Element ("all").Elements ();
-						updates = new List<string> ();
+						filenames = new List<string> ();
 						foreach (XElement node in all) {
-							updates.Add (node.Value);
+							filenames.Add (node.Value);
 						}
 						break;
 					} else {
@@ -104,13 +78,20 @@ public class Config
 						var updateNotes = tempConfig.Element ("update").Elements();
 						foreach (XElement node in updateNotes) {
 							Logger.Log (node.Value,"blue");
-							if(!updates.Contains(node.Value))
-								updates.Add (node.Value);
+							if(!filenames.Contains(node.Value))
+								filenames.Add (node.Value);
 						}
 					}
 				}
-				yield return LoadFiles (updates, url);;
 			}
+
+			if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && fileSize > 3) {
+				//if (panel != null && filesize > 3) {
+				yield return panel.Show (string.Format( I18n.Translate ("not_in_wifi"), fileSize.ToString()+"M"));
+				if (panel.isCancel)
+					yield break;
+			}
+			yield return LoadFiles (filenames, url);
 		}
 	}
 

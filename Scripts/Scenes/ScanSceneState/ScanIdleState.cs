@@ -25,7 +25,7 @@ public class ScanIdleState: ScanSceneState
 		scene.ShowDescription();
 	}
 
-	public virtual void OnBackClick(){
+	public override void OnBackClick(){
 		ScanSceneController.instant.exited = true;
 		OnExit ();
 		SceneManager.LoadScene ("Selection");
