@@ -84,15 +84,14 @@ public class Config
 					}
 				}
 			}
-
-			if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && fileSize > 3) {
-				//if (panel != null && filesize > 3) {
-				yield return panel.Show (string.Format( I18n.Translate ("not_in_wifi"), fileSize.ToString()+"M"));
-				if (panel.isCancel)
-					yield break;
-			}
-			yield return LoadFiles (filenames, url);
 		}
+		if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && fileSize > 3) {
+			//if (panel != null && filesize > 3) {
+			yield return panel.Show (string.Format( I18n.Translate ("not_in_wifi"), fileSize.ToString()+"M"));
+			if (panel.isCancel)
+				yield break;
+		}
+		yield return LoadFiles (filenames, url);
 	}
 
 	private static IEnumerator LoadFiles(List<string> names, string configurl){
@@ -103,7 +102,7 @@ public class Config
 		//var nodes = remoteConfig.Elements ();
 		string platform = GetPlatformName ();
 		int count = names.Count;
-		if (fileLoadedHandler != null) {
+		if (fileLoadedHandler != null && count>0) {
 			fileLoadedHandler.Invoke (0, count);
 		}
 		for (int i=0; i<count ; i++) {

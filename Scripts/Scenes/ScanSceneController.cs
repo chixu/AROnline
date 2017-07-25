@@ -226,8 +226,8 @@ public class ScanSceneController : MonoBehaviour
 					pmi.index = index;
 					pmi.menu = popmenu;
 					pmi.trackableHandler = cte;
-					planeItem.transform.SetParent (tb.gameObject.transform, false);
 					Vector3 position = planeItem.transform.localPosition;
+					planeItem.transform.SetParent (tb.gameObject.transform, false);
 					if (index == 1) {
 						planeItem.transform.localPosition = position.SetX (-position.x);
 					} else if (index == 2) {
