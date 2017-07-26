@@ -10,4 +10,14 @@ public static class GameObjectExtension {
 		if (collider == null)
 			obj.AddComponent<Collider> ();
 	}
+
+
+	public static GameObject GetChildByName(this GameObject o, string name){
+		for (int i = 0; i < o.transform.childCount; i++) {
+			GameObject obj = o.transform.GetChild(i).gameObject;
+			if(obj.name == name)
+				return obj;
+		}
+		return null;
+	}
 }

@@ -4,11 +4,17 @@ All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 ==============================================================================*/
 
+using System.Collections.Generic;
+//using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Vuforia;
 
-namespace Vuforia
-{
+
+public interface ITrackableController{
+	 void OnTrackingFound ();
+	 void OnTrackingLost ();
+}
 	/// <summary>
 	/// A custom handler that implements the ITrackableEventHandler interface.
 	/// </summary>
@@ -18,6 +24,7 @@ namespace Vuforia
 
 		public string videoPath;
 		public string subtitlePath;
+		public List<ITrackableController> controllers = new List<ITrackableController>();
 		#region PRIVATE_MEMBER_VARIABLES
 
 		private TrackableBehaviour mTrackableBehaviour;
@@ -100,7 +107,8 @@ namespace Vuforia
 //			}
 //			if(!string.IsNullOrEmpty(videoPath))
 //				PlayVideo (videoPath);
-
+		for (int i = 0; i < controllers.Count; i++)
+			controllers [i].OnTrackingFound ();
 			ScanSceneController.instant.SetState (type);
 		}
 
@@ -131,6 +139,8 @@ namespace Vuforia
 			{
 				component.enabled = false;
 			}
+		for (int i = 0; i < controllers.Count; i++)
+			controllers [i].OnTrackingLost ();
 //			foreach (AudioSource audio in audios)
 //			{
 //				audio.Stop ();
@@ -149,4 +159,4 @@ namespace Vuforia
 
 //		#endregion // PRIVATE_METHODS
 	}
-}
+

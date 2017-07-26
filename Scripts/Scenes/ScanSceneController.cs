@@ -17,6 +17,7 @@ public class ScanSceneController : MonoBehaviour
 	//public Text text;
 	//public MediaPlayer mediaPlayer;
 	//public Material videoMaterial;
+	//public GameObject buttonPanel;
 	public GameObject videoPanel;
 	public Text title;
 	public Text description;
@@ -175,6 +176,8 @@ public class ScanSceneController : MonoBehaviour
 		}
 
 		//int counter = 0;
+		GameObject buttonCanvasPrefab = null, buttonPrefab = null;// = Resources.Load("Prefab/ScanButtonCanvas") as GameObject;
+
 		IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager ().GetTrackableBehaviours ();
 		foreach (TrackableBehaviour tb in tbs) {
 
@@ -193,14 +196,27 @@ public class ScanSceneController : MonoBehaviour
 			cte.subtitlePath = GetAssetsPath (Xml.Attribute (info, "subtitle"), true);
 			UnityEngine.Object asset = null;
 			if (objType == "object") {
-				string prefabName = Xml.Attribute (info, "prefab");
-				asset = loadedAssets.ContainsKey (prefabName) ? loadedAssets [prefabName] : new GameObject ();
+//				string prefabName = Xml.Attribute (info, "prefab");
+//				asset = loadedAssets.ContainsKey (prefabName) ? loadedAssets [prefabName] : new GameObject ();
+//				var buttonNodes = info.Elements ();
+//				GameObject bPanel = null;
+//				foreach (XElement n in buttonNodes) {
+//					if (buttonCanvasPrefab == null)
+//						buttonCanvasPrefab = Resources.Load ("Prefabs/ScanButtonCanvas") as GameObject;
+//					if (buttonPrefab == null)
+//						buttonPrefab = Resources.Load ("Prefabs/ScanButton") as GameObject;
+//					if (bPanel == null) {
+//						bPanel = Instantiate (buttonCanvasPrefab) as GameObject;
+//						bPanel.transform.SetParent (tb.gameObject.transform, false);
+//					}
+//					GameObject button = Instantiate (buttonPrefab) as GameObject;
+//					button.AddComponent<ToggleButtonShowHide> ();
+//					button.transform.SetParent (bPanel.transform.GetChild(0), false);
+//				}
+				InstantiateModelObject(info, tb, out asset);
 			} else if (objType == "video") {
-				asset = planePrefab;
-				//Renderer render = (planePrefab).GetComponent<Renderer> ();
-				//render.material = videoMaterial;
+				InstantiateVideoObject(info, tb, out asset);
 
-				cte.videoPath = GetAssetsPath (Xml.Attribute (info, "videosrc"), true);
 				//cte.mediaPlayer = mediaPlayer;
 			} else if (objType == "menu4") {
 				//asset = planePrefab;
@@ -256,22 +272,77 @@ public class ScanSceneController : MonoBehaviour
 					index++;
 				}
 				popmenu.Hide ();
+				InstantiateObject (tb, asset);
 			}
 			//GameObject obj = (GameObject)GameObject.Instantiate (asset);
-			if (asset != null) {
-				GameObject prefab = asset as GameObject;
-				GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);
-
-				obj.transform.SetParent (tb.gameObject.transform, false);
-				ApplyItemInfo (obj, Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName));
-				obj.RegisterClickEvent ();
-			}
-			//obj.gameObject.SetActive (true);
+//			if (asset != null) {
+//				GameObject prefab = asset as GameObject;
+//				GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);
+//
+//				obj.transform.SetParent (tb.gameObject.transform, false);
+//				ApplyItemInfo (obj, Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName));
+//				obj.RegisterClickEvent ();
+//			}
 		}
 
 
 		if (!objectTracker.Start ()) {
 			Debug.Log ("<color=yellow>Tracker Failed to Start.</color>");
+		}
+	}
+
+	GameObject InstantiateObject(TrackableBehaviour tb, UnityEngine.Object asset){
+		if (asset != null) {
+			GameObject prefab = asset as GameObject;
+			GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);
+			obj.transform.SetParent (tb.gameObject.transform, false);
+			ApplyItemInfo (obj, Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName));
+			obj.RegisterClickEvent ();
+			return obj;
+		}
+		return null;
+	}
+
+	void InstantiateVideoObject(XElement info, TrackableBehaviour tb, out UnityEngine.Object asset){
+		asset = planePrefab;
+		CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
+		cte.videoPath = GetAssetsPath (Xml.Attribute (info, "videosrc"), true);
+		InstantiateObject (tb, asset);
+	}
+
+
+	void InstantiateModelObject(XElement info, TrackableBehaviour tb, out UnityEngine.Object asset){
+		GameObject buttonCanvasPrefab = null, buttonPrefab = null;
+		string prefabName = Xml.Attribute (info, "prefab");
+		asset = loadedAssets.ContainsKey (prefabName) ? loadedAssets [prefabName] : new GameObject ();
+		var buttonNodes = info.Elements ();
+		GameObject bPanel = null;
+		List<ToggleButtonShowHide> buttons = new List<ToggleButtonShowHide> ();
+		foreach (XElement n in buttonNodes) {
+			if (buttonCanvasPrefab == null)
+				buttonCanvasPrefab = Resources.Load ("Prefabs/ScanButtonCanvas") as GameObject;
+			if (buttonPrefab == null)
+				buttonPrefab = Resources.Load ("Prefabs/ScanButton") as GameObject;
+			if (bPanel == null) {
+				bPanel = Instantiate (buttonCanvasPrefab) as GameObject;
+				bPanel.transform.SetParent (tb.gameObject.transform, false);
+			}
+			GameObject button = Instantiate (buttonPrefab) as GameObject;
+			button.AddComponent<ToggleButtonShowHide> ();
+			ToggleButtonShowHide tgsh = button.GetComponent<ToggleButtonShowHide> ();
+			tgsh.label = Xml.Attribute (n, "label");
+			tgsh.defaultShowing = Xml.Attribute (n, "show") == "false";
+			//tgsh.target = asset as GameObject;
+			tgsh.targetName = Xml.Attribute (n, "id");
+			button.transform.SetParent (bPanel.transform.GetChild(0), false);
+			buttons.Add (tgsh);
+		}
+		CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
+		GameObject obj = InstantiateObject (tb, asset);
+		obj.AddComponent<TouchRotate> ();
+		for (int i = 0; i < buttons.Count; i++) {
+			buttons [i].target = obj;
+			cte.controllers.Add (buttons [i]);
 		}
 	}
 

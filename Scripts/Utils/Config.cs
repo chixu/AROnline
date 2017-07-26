@@ -40,12 +40,13 @@ public class Config
 		yield return Request.ReadPersistent (url, str => Config.localConfig = XDocument.Parse(str).Root);
 		yield return Request.ReadRemote (url, str => Config.remoteConfig = XDocument.Parse(str).Root);
 		string platform = GetPlatformName ();
-		fileSize = Xml.Float(remoteConfig, "size");
+
 		List<string> filenames = new List<string> ();
 		if (remoteConfig == null) {
 			Debug.Log ("remoteConfig = null");
 		} else if (localConfig == null ) {
 			Debug.Log ("remoteConfig != null");
+			fileSize = Xml.Float(remoteConfig.Element ("all"), "size");
 			var nodes = remoteConfig.Element ("all").Elements();
 			foreach (XElement node in nodes) {
 				filenames.Add (node.Value);
@@ -56,6 +57,7 @@ public class Config
 			string remoteVersion = Xml.Version (remoteConfig);
 			//float filesize = Xml.Float(remoteConfig, "size");
 			if (localVersion != remoteVersion) {
+				fileSize = Xml.Float(remoteConfig.Element ("update"), "size");
 				var nodes = remoteConfig.Element ("update").Elements();
 				//List<string> updates = new List<string> ();
 				foreach (XElement node in nodes) {
@@ -95,7 +97,8 @@ public class Config
 	}
 
 	private static IEnumerator LoadFiles(List<string> names, string configurl){
-
+		if (names.Count == 0)
+			yield break;
 		for (int i = 0; i < names.Count; i++) {
 			Logger.Log (names [i], "green");
 		}
