@@ -145,10 +145,9 @@ public interface ITrackableController{
 //			{
 //				audio.Stop ();
 //			}
-			if(!ScanSceneController.instant.exited && !ScanSceneController.instant.videoPanel.activeSelf)
-				ScanSceneController.instant.SetState ("idle");
+		if(!ScanSceneController.instant.exited && !ScanSceneController.instant.videoPanel.shown)
+			ScanSceneController.instant.SetState ("idle");
 		}
-
 
 //		public void StopVideo(){
 //			if (mediaPlayer) {

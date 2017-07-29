@@ -57,8 +57,8 @@ public class ScanSceneState
 	}
 
 	protected void StopVideoPanel(){
-		if (ScanSceneController.instant.videoPanel.activeSelf) {
-			ScanSceneController.instant.videoPanel.SetActive (false);
+		if (ScanSceneController.instant.videoPanel.shown) {
+			ScanSceneController.instant.videoPanel.Hide();
 			VideoController.instant.Stop ();
 		}
 	}

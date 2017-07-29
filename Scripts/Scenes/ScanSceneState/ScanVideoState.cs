@@ -38,13 +38,16 @@ public class ScanVideoState:ScanSceneState{
 					//ScanSceneController.instant.SetState("videopanel", new Hashtable(){{"object",obj},{"nextstate",nextState}});
 					Transform trans = obj.GetComponent<Transform>();
 					obj.SetActive (false);
-					scene.videoPanel.SetActive(true);
-					RawImage image= scene.videoPanel.GetComponent<RawImage>();
-					VideoPlayer videoPlayer = VideoController.instant.videoPlayer;
-					videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+
+
+
 					//videoPlayer.Play ();
-					scene.videoPanel.GetComponent<RectTransform>().localScale = new Vector2(1, Mathf.Min(1.4f, trans.localScale.z/trans.localScale.x));
-					image.texture = videoPlayer.texture;
+					scene.videoPanel.videoPlayer.GetComponent<RectTransform>().localScale = new Vector2(1, Mathf.Min(1.4f, trans.localScale.z/trans.localScale.x));
+
+					//VideoPlayer videoPlayer = ;
+					scene.videoPanel.Show();
+					scene.videoPanel.Play(VideoController.instant.videoPlayer);
+
 				};
 			}
 		}
@@ -71,8 +74,8 @@ public class ScanVideoState:ScanSceneState{
 //	}
 
 	public override void OnBackClick(){
-		if (scene.videoPanel.activeSelf) {
-			scene.videoPanel.SetActive (false);
+		if (scene.videoPanel.shown) {
+			scene.videoPanel.Hide();
 			videoContainer.SetActive (false);
 			ScanSceneController.instant.SetState ("idle");
 		}else

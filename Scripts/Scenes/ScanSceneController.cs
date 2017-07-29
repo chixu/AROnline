@@ -18,7 +18,7 @@ public class ScanSceneController : MonoBehaviour
 	//public MediaPlayer mediaPlayer;
 	//public Material videoMaterial;
 	//public GameObject buttonPanel;
-	public GameObject videoPanel;
+	public VideoPanelPlayer videoPanel;
 	public Text title;
 	public Text description;
 	public GameObject planePrefab;

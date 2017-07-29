@@ -53,7 +53,7 @@ public class ScanMenuVideoState:ScanVideoState{
 	}
 
 	public override void OnBackClick(){
-		scene.videoPanel.SetActive (false);
+		scene.videoPanel.Hide ();
 		scene.SetState("menu4", new Hashtable(){{"showImmediate", true}});
 	}
 

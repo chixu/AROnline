@@ -6,22 +6,36 @@ using System.IO;
 using UnityEngine.UI;
 using System;
 
+public enum Environment{
+	Production, Development
+}
+
 public class Configuration : MonoBehaviour {
-	public bool enablePopupVideo = true;
 	public static Configuration instant;
-	public string remoteUrl = "http://www.iyoovr.com/hsyx";
+	[Header("Production")]
+	public string prodRemoteUrl = "http://www.iyoovr.com/hsyx";
+	[Header("Development")]
+	public string devRemoteUrl = "http://www.iyoovr.com/hsyx";
+
 	public string language = Language.Chinese;
+	public bool enablePopupVideo = true;
 	public Text message;
+	public Environment environment;
+
 	private string configStr;
 
 
 	void Awake(){
 		Configuration.instant = this;
+		if (environment == Environment.Development) {
+			Request.RemoteUrl = devRemoteUrl;
+		} else {
+			Request.RemoteUrl = prodRemoteUrl;
+		}
 	}
 
 	// Use this for initialization
 	void Start () {
-		Request.RemoteUrl = remoteUrl;
 		StartCoroutine (readConfig ());
 		message.text = "";
 	}
