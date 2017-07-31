@@ -32,7 +32,7 @@ public class StartSceneController : MonoBehaviour {
 	public void OnLoaded(){
 		loaded = true;
 		//WWW www = new WWW (Request.Read ());
-		StartCoroutine(LoadBg());
+		//StartCoroutine(LoadBg());
 		NextScene ();
 	}
 
