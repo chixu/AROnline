@@ -30,6 +30,7 @@ public class SelectionSceneController : MonoBehaviour
 		progressPanel.onCancelHandler = () => {
 			Config.forceBreak = true;
 			progressPanel.Hide();
+			Request.Cancel();
 		};
 		StartCoroutine (initScene ());
 	}
@@ -77,14 +78,18 @@ public class SelectionSceneController : MonoBehaviour
 		}
 		set{
 			enabled = value;
-			for (int i = 0; i < selectionItems.Count; i++) {
-				Button btn = selectionItems [0].GetComponent<Button> ();
-				btn.interactable = enabled;
-			}
+//			if (enabled) {
+//				for (int i = 0; i < selectionItems.Count; i++) {
+//					Logger.Log ("enbaled ", "red");
+//					Button btn = selectionItems [i].GetComponent<Button> ();
+//					btn.interactable = enabled;
+//				}
+//			}
 		}
 	}
 
 	void OnItemClick(SelectionItem item){
+		//item.gameObject.GetComponent<Button> ().interactable = false;
 		StartCoroutine (OnItemClickHandler (item.name));
 	}
 

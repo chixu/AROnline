@@ -7,6 +7,7 @@ using System.IO;
 
 public class Request
 {
+	public static WWW current;
 	public static string RemoteUrl = "http://192.168.0.105:8080/web";
 
 	//	public static IEnumerator ReadRemote (string str, Action<string> handler)
@@ -29,6 +30,7 @@ public class Request
 		string url = RemoteUrl + "/" + str;
 		Logger.Log ("loading " + url);
 		WWW www = new WWW (Utils.ApplyRandomVersion (url));
+		current = www;
 		yield return www;
 		if (!String.IsNullOrEmpty (www.error)) {
 			Logger.Log ("unabled to load " + url);
@@ -73,6 +75,7 @@ public class Request
 	{
 		Logger.Log ("loading " + str);
 		WWW www = new WWW (str);
+		current = www;
 		yield return www;
 		if (!String.IsNullOrEmpty (www.error)) {
 			Logger.Log ("unabled to load " + str);
@@ -88,11 +91,25 @@ public class Request
 		src = absolute ? src : Utils.ApplyRandomVersion (RemoteUrl + "/" + src);
 		Logger.Log ("Downloading " + src + " to " + dest);
 		WWW www = new WWW (src);
+		current = www;
 		yield return www;
 		dest = absolute ? dest : Path.Combine (Application.persistentDataPath, dest);
 		if (!Directory.Exists (Path.GetDirectoryName (dest)))
 			Directory.CreateDirectory (Path.GetDirectoryName (dest));
-		File.WriteAllBytes (dest, www.bytes);
+		try{
+			File.WriteAllBytes (dest, www.bytes);
+		}catch{
+
+		}
 		Logger.Log ("Downloaded " + src + " to " + dest);
+	}
+
+	public static void Cancel(){
+		
+		if (current != null) {
+			//Logger.Log (current.isDone.ToString (), "blue");
+			current.Dispose ();
+			//Logger.Log (current.isDone.ToString (), "blue");
+		}
 	}
 }
