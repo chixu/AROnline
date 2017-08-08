@@ -16,6 +16,7 @@ public class VideoController : MonoBehaviour
 	public static VideoController instant;
 	private string prevPath;
 	public VideoPlayer videoPlayer;
+	public GameObject videoContainer;
 	public AudioSource audioSource;
 	private bool isDown = false;
 	//private bool isClick = false;
@@ -34,14 +35,21 @@ public class VideoController : MonoBehaviour
 	{
 		isDown = false;
 		obj.SetActive (false);
+		videoContainer = obj;
 		//videoPlayer = obj.GetComponent<VideoPlayer>();
 		StartCoroutine (LoadAndPlay (obj, path));
+	}
+
+	public void HideVideoContainer(){
+		if (videoContainer != null)
+			videoContainer.SetActive (false);
 	}
 
 	public void Stop ()
 	{
 		videoSlider.gameObject.SetActive (false);
 		videoPlayer.targetMaterialRenderer = null;
+		HideVideoContainer ();
 		//bottomText.gameObject.SetActive (true);
 		videoSlider.value = 0;
 		videoPlayer.frame = 0;

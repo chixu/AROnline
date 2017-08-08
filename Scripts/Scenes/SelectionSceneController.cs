@@ -57,7 +57,7 @@ public class SelectionSceneController : MonoBehaviour
 				selectionItems.Add (obj);
 
 				SelectionItem itemComp = obj.GetComponent<SelectionItem> ();
-				itemComp.name = desc;
+				itemComp.name = title;
 				itemComp.title.text = I18n.Translate (title);
 				itemComp.description.text = I18n.Translate (desc);
 				itemComp.btnInfo.SetActive (!string.IsNullOrEmpty (help));
@@ -97,7 +97,7 @@ public class SelectionSceneController : MonoBehaviour
 		if (!Config.forceBreak && !okCancelPanel.isCancel) {
 			Hashtable arg = new Hashtable ();
 			arg.Add ("name", name);
-			arg.Add ("data", Xml.GetChildByAttribute(layout.Element ("items"), "desc", name));
+			arg.Add ("data", Xml.GetChildByAttribute(layout.Element ("items"), "title", name));
 			SceneManagerExtension.LoadScene ("Scan", arg);
 		}
 	}
