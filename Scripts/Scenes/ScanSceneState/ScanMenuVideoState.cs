@@ -36,7 +36,7 @@ public class ScanMenuVideoState:ScanVideoState{
         //VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
         //scene.mediaPlayer.Rewind(false);
         //scene.mediaPlayer.Play ();
-
+		TrackStart (item.name, "Video");
 		GameObject curr = item.gameObject;
 		string path = item.videoPath;
 		RegisterClick (curr, "menu4");
@@ -45,6 +45,7 @@ public class ScanMenuVideoState:ScanVideoState{
 
 	public override void OnExit(){
 		//base.OnExit ();
+		TrackEnd (item.name, "Video");
 		OnClick click = item.gameObject.GetComponent<OnClick> ();
 		if (click != null) {
 			click.OnClickHandler = null;

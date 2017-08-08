@@ -21,6 +21,7 @@ public class PopMenuItem : MonoBehaviour {
 	public GameObject threeDObject = null;
 	public string videoPath;
 	public string subtitlePath;
+	public string name;
 
 	public void Initiate(){
 		origY = this.transform.localPosition.y;

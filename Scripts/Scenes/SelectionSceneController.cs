@@ -42,8 +42,10 @@ public class SelectionSceneController : MonoBehaviour
 			var items = itemsEle.Elements ();
 			int index = 0;
 			foreach (XElement item in items) {
-				string desc = item.Attribute ("desc").Value;
-				string icon = item.Attribute ("icon").Value;
+				string desc = Xml.Attribute (item, "desc");
+				string title = Xml.Attribute (item, "title");
+				string help = Xml.Attribute (item, "help");
+				string icon = Xml.Attribute (item, "icon");
 				Debug.Log (item);
 				GameObject obj = GameObject.Instantiate (selectionItem);
 				//obj.transform.r
@@ -56,7 +58,10 @@ public class SelectionSceneController : MonoBehaviour
 
 				SelectionItem itemComp = obj.GetComponent<SelectionItem> ();
 				itemComp.name = desc;
-				itemComp.text.text = I18n.Translate (desc);
+				itemComp.title.text = I18n.Translate (title);
+				itemComp.description.text = I18n.Translate (desc);
+				itemComp.btnInfo.SetActive (!string.IsNullOrEmpty (help));
+				itemComp.helpLink = Request.RemoteUrl + help;
 				itemComp.SetOnClick (OnItemClick);
 //				WWW www = new WWW(Path.Combine(Application.persistentDataPath, "ui/"+icon));
 //				itemComp.image.sprite = Sprite.Create(www.texture, new Rect(0,0,www.texture.width, www.texture.height), new Vector2(0,0));

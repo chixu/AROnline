@@ -13,6 +13,7 @@ public class ScanSceneState
 {
 	public ScanSceneController scene;
 	public string name;
+	protected float trackTimer;
 	//public Dictionary<string, ScanSceneState> states;
 
 	public static ScanSceneState GetState(string name){
@@ -76,5 +77,14 @@ public class ScanSceneState
 				click.OnClickHandler = action;
 			}
 		}
+	}
+
+	protected void TrackStart(string name, string type){
+		Director.trackerManager.TrackEvent(TrackerEventName.TrackingStart, new Dictionary<string, object>(){{"Scene",scene.sceneName}, {"Name",name}, {"Type",type}});
+		trackTimer = Time.fixedTime;
+	}
+
+	protected void TrackEnd(string name, string type){
+		Director.trackerManager.TrackEvent(TrackerEventName.TrackingEnd, new Dictionary<string, object>(){{"Scene",scene.sceneName},{"Name",name}, {"Type",type}, {"Timer",Time.fixedTime-trackTimer}});
 	}
 }

@@ -24,12 +24,14 @@ public class ScanMenuObjectState:ScanSceneState
 		ScanSceneController.instant.subtitle.Play (item.subtitlePath);
 		item.threeDObject.SetActive (true);
 		audio = item.threeDObject.GetComponent<AudioSource> ();
+		TrackStart (item.name, "Object");
 		if (audio != null)
 			audio.Play ();
 	}
 
 	public override void OnExit ()
 	{
+		TrackEnd (item.name, "Object");
 		if (audio != null)
 			audio.Stop ();
 		item.threeDObject.SetActive (false);

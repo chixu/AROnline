@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using UnityEngine.UI;
 using System;
+using System.Xml.Linq;
 
 public enum Environment{
 	Production, Development
@@ -48,6 +49,7 @@ public class Configuration : MonoBehaviour {
 		yield return Request.ReadPersistent ("ui/config.xml", str=>configStr = str);
 		if (!String.IsNullOrEmpty (configStr)) {
 			yield return I18n.Initialise (language);
+			Director.Initialize (XDocument.Parse(configStr).Root);
 			GetComponent<StartSceneController> ().OnLoaded();
 		} else {
 			if (I18n.language == Language.Chinese) {

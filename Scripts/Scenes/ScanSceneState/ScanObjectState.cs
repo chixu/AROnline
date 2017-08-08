@@ -12,6 +12,7 @@ using System.Xml.Linq;
 public class ScanObjectState:ScanSceneState
 {
 	private AudioSource audio;
+
 	public ScanObjectState(){
 		name = "object";
 	}
@@ -19,11 +20,13 @@ public class ScanObjectState:ScanSceneState
 	public override void OnEnter(Hashtable args = null){
 		base.OnEnter ();
 		audio = ScanSceneController.currentTrackableObject.GetComponent<AudioSource> ();
+		TrackStart (ScanSceneController.currentTrackableObject.name, "Object");
 		if (audio)
 			audio.Play ();
 	}
 
 	public virtual void OnExit(){
+		TrackEnd (ScanSceneController.currentTrackableObject.name, "Object");
 		if (audio)
 			audio.Stop ();
 		base.OnExit ();

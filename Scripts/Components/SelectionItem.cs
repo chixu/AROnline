@@ -7,8 +7,11 @@ using System;
 
 public class SelectionItem : MonoBehaviour {
 
-	public Text text;
+	public Text title;
+	public Text description;
+	public string helpLink;
 	public Image image;
+	public GameObject btnInfo;
 	private Action<SelectionItem> onClickHandler;
 	// Use this for initialization
 
@@ -26,5 +29,9 @@ public class SelectionItem : MonoBehaviour {
 			onClickHandler.Invoke (this);
 	}
 
+
+	public void OnInfoClick(){
+		Application.OpenURL (helpLink);
+	}
 	//public void Init
 }

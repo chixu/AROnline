@@ -33,7 +33,7 @@ public class ScanSceneController : MonoBehaviour
 	//private string dataSetName = "trackings.xml";
 	private Dictionary<string, UnityEngine.Object> loadedAssets;
 	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
-	public string prevSceneName;
+	public string sceneName;
 	//from prev scene
 	public XElement data;
 	public bool exited = false;
@@ -65,7 +65,7 @@ public class ScanSceneController : MonoBehaviour
 	string GetAssetsPath (string str, bool isFile = false)
 	{
 		if(string.IsNullOrEmpty(str)) return "";
-		return Request.ResolvePath (Application.persistentDataPath + "/" + prevSceneName + "/" + str, isFile);
+		return Request.ResolvePath (Application.persistentDataPath + "/" + sceneName + "/" + str, isFile);
 	}
 
 	IEnumerator StartGame ()
@@ -74,13 +74,13 @@ public class ScanSceneController : MonoBehaviour
 
 		SetState ("idle");
 
-		yield return Request.ReadPersistent (prevSceneName + "/iteminfos.xml", str => itemInfos = XDocument.Parse (str).Root);
+		yield return Request.ReadPersistent (sceneName + "/iteminfos.xml", str => itemInfos = XDocument.Parse (str).Root);
 
 		var abNodes = data.Element ("assetbundles").Nodes ();
 		foreach (XElement node in abNodes) {
 			AssetBundle bundle = null;
 			string abName = Xml.Attribute (node, "src");
-			string keyName = prevSceneName + "_" + abName;
+			string keyName = sceneName + "_" + abName;
 			Logger.Log (abName + " " + keyName, "blue");
 			if (!AssetBundleManager.bundles.ContainsKey (keyName)) {
 				Logger.Log (GetAssetsPath (abName, true), "purple");
@@ -147,8 +147,9 @@ public class ScanSceneController : MonoBehaviour
 	{
 		instant = this;
 		subtitle = GetComponent<Subtitle> ();
-		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
+		sceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
 		data = SceneManagerExtension.GetSceneArguments () ["data"] as XElement;
+		Director.trackerManager.TrackEvent(TrackerEventName.SceneEnter, new Dictionary<string, object>(){{"Name", sceneName}});
 	}
 
 	void Start ()
@@ -159,7 +160,7 @@ public class ScanSceneController : MonoBehaviour
 	IEnumerator LoadDataSet ()
 	{
 
-		ObjectTracker objectTracker = TrackerManager.Instance.GetTracker<ObjectTracker> ();
+		ObjectTracker objectTracker = Vuforia.TrackerManager.Instance.GetTracker<ObjectTracker> ();
 		objectTracker.DestroyAllDataSets (false);
 		objectTracker.Stop ();  // stop tracker so that we can add new dataset
 
@@ -178,11 +179,11 @@ public class ScanSceneController : MonoBehaviour
 		//int counter = 0;
 		GameObject buttonCanvasPrefab = null, buttonPrefab = null;// = Resources.Load("Prefab/ScanButtonCanvas") as GameObject;
 
-		IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager ().GetTrackableBehaviours ();
+		IEnumerable<TrackableBehaviour> tbs = Vuforia.TrackerManager.Instance.GetStateManager ().GetTrackableBehaviours ();
 		foreach (TrackableBehaviour tb in tbs) {
 
 			Logger.Log (tb.TrackableName, "purple");
-			tb.gameObject.name = "AR-" + tb.TrackableName;
+			tb.gameObject.name = tb.TrackableName;
 
 			XElement info = Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName);
 			if (info == null)
@@ -254,6 +255,7 @@ public class ScanSceneController : MonoBehaviour
 					pmi.Initiate ();
 					string itemSrc = Xml.Attribute (n, "src");
 					string videoPath = Xml.Attribute (n, "videosrc");
+					planeItem.name = pmi.name = tb.TrackableName+"_"+Xml.Attribute (n, "id");
 					pmi.subtitlePath = GetAssetsPath (Xml.Attribute (n, "subtitle"), true);
 					if (!string.IsNullOrEmpty (videoPath)) {
 						pmi.videoPath = GetAssetsPath (videoPath);

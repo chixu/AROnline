@@ -27,6 +27,7 @@ public class ScanVideoState:ScanSceneState{
 		scene.ShowVideoSlide ();
 		RegisterClick (videoContainer);
 		VideoController.instant.Play(videoContainer, path);
+		TrackStart (ScanSceneController.currentTrackableObject.name, "Video");
     }
 
 	protected void RegisterClick(GameObject obj, string nextState="idle"){
@@ -85,6 +86,7 @@ public class ScanVideoState:ScanSceneState{
 
 	public override void OnExit(){
 		base.OnExit ();
+		TrackEnd (ScanSceneController.currentTrackableObject.name, "Video");
 		VideoController.instant.Stop ();
     }
 }
