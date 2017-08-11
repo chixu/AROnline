@@ -61,7 +61,7 @@ public class SelectionSceneController : MonoBehaviour
 				itemComp.name = title;
 				itemComp.title.text = I18n.Translate (title);
 				itemComp.description.text = I18n.Translate (desc);
-				itemComp.btnInfo.SetActive (!string.IsNullOrEmpty (help));
+				itemComp.btnInfo.SetActive (false);// (!string.IsNullOrEmpty (help));
 				itemComp.helpLink = Request.RemoteUrl + help;
 				itemComp.SetOnClick (OnItemClick);
 //				WWW www = new WWW(Path.Combine(Application.persistentDataPath, "ui/"+icon));

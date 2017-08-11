@@ -19,7 +19,7 @@ public class ScanMenuState:ScanSceneState{
 	{
 		StopVideoPanel ();
 		scene.title.text = I18n.Translate (scene.sceneName+"_scan_title");
-		scene.description.text = I18n.Translate (scene.sceneName+"_scan_desc");
+		scene.description.text = I18n.Translate (scene.sceneName+"_desc");
 		PopMenu menu = ScanSceneController.currentTrackableObject.GetComponent<PopMenu> ();
 		//VideoController.instant.videoPlayer.gameObject.SetActive(false);
 		scene.ShowDescription();

@@ -21,10 +21,12 @@ public class ScanSceneController : MonoBehaviour
 	public VideoPanelPlayer videoPanel;
 	public Text title;
 	public Text description;
+	public GameObject infoPanel;
 	public GameObject planePrefab;
 	public static ScanSceneController instant;
 	public static GameObject currentTrackableObject;
 	public ScanSceneState state;
+	[HideInInspector]
 	public Subtitle subtitle;
 
 	//	private Config localConfig;
@@ -33,11 +35,19 @@ public class ScanSceneController : MonoBehaviour
 	//private string dataSetName = "trackings.xml";
 	private Dictionary<string, UnityEngine.Object> loadedAssets;
 	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
+	[HideInInspector]
 	public string sceneName;
 	//from prev scene
 	public XElement data;
+	[HideInInspector]
 	public bool exited = false;
 	private XElement itemInfos;
+
+	//info panel
+	public Text infoTitle;
+	public Text infoTip1;
+	public Text infoTip2;
+	public Text infoTip3;
 
 
 	[System.Serializable]
@@ -117,6 +127,7 @@ public class ScanSceneController : MonoBehaviour
 		}
 		PrintLoadedAssets ();
 		StartCoroutine (LoadDataSet ());
+		//infoPanel.SetActive (Director.userBehavior.GetValue ("scantip") == "0");
 	}
 
 	public void PrintLoadedAssets ()
@@ -154,6 +165,10 @@ public class ScanSceneController : MonoBehaviour
 
 	void Start ()
 	{
+		infoTitle.text = I18n.Translate ("tiptitle");
+		infoTip1.text = string.Format(I18n.Translate ("tip1"), I18n.Translate (sceneName + "_target"));
+		infoTip2.text = I18n.Translate ("tip2");
+		infoTip3.text = I18n.Translate ("tip3");
 		StartCoroutine (StartGame ());
 	}
 
@@ -376,6 +391,26 @@ public class ScanSceneController : MonoBehaviour
 	{
 		state.OnBackClick ();
 	}
+
+	public void OnInfoClick ()
+	{
+		infoPanel.SetActive (!infoPanel.activeSelf);
+	}
+
+	public void OnInfoLinkClick ()
+	{
+		Application.OpenURL (Request.RemoteUrl + I18n.Translate(sceneName+"_infolink") );
+	}
+
+	public void OnInfoCloseClick ()
+	{
+		infoPanel.SetActive (false);
+	}
+
+//	public void OnInfoNotShowAgainClick ()
+//	{
+//		Director.userBehavior.SetValueAndSave ("scantip", "0");
+//	}
 	//	void Log (string str)
 	//	{
 	//		if (!String.IsNullOrEmpty (str))
