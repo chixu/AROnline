@@ -44,12 +44,11 @@ public class Configuration : MonoBehaviour {
 	IEnumerator readConfig ()
 	{
 		yield return Config.LoadConfig ("ui/config.xml");
-
-
 		yield return Request.ReadPersistent ("ui/config.xml", str=>configStr = str);
 		if (!String.IsNullOrEmpty (configStr)) {
 			yield return I18n.Initialise (language);
 			Director.Initialize (XDocument.Parse(configStr).Root);
+			yield return Director.Load ();
 			GetComponent<StartSceneController> ().OnLoaded();
 		} else {
 			if (I18n.language == Language.Chinese) {

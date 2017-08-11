@@ -12,6 +12,7 @@ public class Director {
 
 
 	public static TrackerManager trackerManager;
+	public static UserBehavior userBehavior;
 
 	public static void Initialize(XElement config){
 		trackerManager = new TrackerManager ();
@@ -31,6 +32,10 @@ public class Director {
 			Logger.Log (name, "blue");
 			trackerManager.eventBlacklist.Add (name, name);
 		}
+		userBehavior = new UserBehavior ();
+	}
 
+	public static IEnumerator Load(){
+		yield return userBehavior.Load ();
 	}
 }
