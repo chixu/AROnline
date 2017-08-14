@@ -5,7 +5,6 @@ using UnityEngine;
 public class TrackerManager {
 
 	private List<ITracker> trackers;
-	public Dictionary<string, string> eventBlacklist = new Dictionary<string, string>();
 	//public static TrackerManager instant;
 
 	public TrackerManager(){
@@ -19,8 +18,6 @@ public class TrackerManager {
 	}
 
 	public void TrackEvent(string eventName, Dictionary<string, object> data){
-		if (eventBlacklist.ContainsKey (eventName))
-			return;
 		for (int i = 0; i < trackers.Count; i++) {
 			trackers [i].TrackEvent (eventName, data);
 		}

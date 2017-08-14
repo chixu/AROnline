@@ -25,7 +25,7 @@ public class ScanObjectState:ScanSceneState
 			audio.Play ();
 	}
 
-	public virtual void OnExit(){
+	public override void OnExit(){
 		TrackEnd (ScanSceneController.currentTrackableObject.name, "Object");
 		if (audio)
 			audio.Stop ();

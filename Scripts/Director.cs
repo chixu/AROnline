@@ -19,18 +19,30 @@ public class Director {
 		var trackers = config.Element ("trackers").Elements();
 		foreach (XElement n in trackers) {
 			string name = Xml.Attribute (n, "name");
-			Logger.Log (name, "blue");
-			if(name == "unity")
-				trackerManager.AddTracker (new UnityTracker ());
-			else if(name == "umeng")
-				trackerManager.AddTracker (new UmengTracker ());
-		}
-
-		var trackevents = config.Element ("trackevents").Elements();
-		foreach (XElement n in trackevents) {
-			string name = Xml.Attribute (n, "name");
-			Logger.Log (name, "blue");
-			trackerManager.eventBlacklist.Add (name, name);
+			ITracker tracker = null;
+			if (name == "unity")
+				tracker = new UnityTracker ();
+			else if (name == "umeng") {
+				string appid = "";
+				#if UNITY_IPHONE
+				appid = Xml.Attribute (n, "iosid");
+				#else
+				appid = Xml.Attribute (n, "androidid");
+				#endif
+				if(!string.IsNullOrEmpty(appid))
+					tracker = new UmengTracker (appid);
+			}
+			if (tracker != null) {
+				var events = n.Element ("events");
+				if (events != null) {
+					var trackevents = events.Elements ();
+					foreach (XElement nn in trackevents) {
+						string eventname = Xml.Attribute (nn, "name");
+						tracker.eventBlacklist.Add (eventname, eventname);
+					}
+				}
+				trackerManager.AddTracker (tracker);
+			}
 		}
 		userBehavior = new UserBehavior ();
 	}
