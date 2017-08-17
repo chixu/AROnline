@@ -87,7 +87,7 @@ public class Config
 				}
 			}
 		}
-		if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && fileSize > 3) {
+		if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && fileSize > 3 && filenames.Count > 0) {
 			//if (panel != null && filesize > 3) {
 			yield return panel.Show (string.Format( I18n.Translate ("not_in_wifi"), fileSize.ToString()+"M"));
 			if (panel.isCancel)
