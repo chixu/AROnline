@@ -20,6 +20,8 @@ public class SelectionSceneController : MonoBehaviour
 	// Use this for initialization
 	private bool enabled = true;
 
+	private ConfigLoader configLoader;
+
 	void Start ()
 	{
 //		Debug.Log ("Start");
@@ -28,9 +30,8 @@ public class SelectionSceneController : MonoBehaviour
 		phone.text = I18n.Translate("select_phone");
 		selectionItems = new List<GameObject> ();
 		progressPanel.onCancelHandler = () => {
-			Config.forceBreak = true;
+			configLoader.Cancel();
 			progressPanel.Hide();
-			Request.Cancel();
 		};
 		StartCoroutine (initScene ());
 	}
@@ -97,9 +98,14 @@ public class SelectionSceneController : MonoBehaviour
 		Logger.Log (name + " clicked");
 		okCancelPanel.Reset ();
 		Enabled = false;
-		yield return Config.LoadConfig (name + "/config.xml", FileLoaded, okCancelPanel);
+		configLoader = new ConfigLoader ();
+		//configLoader.loadedHandler = FileLoaded;
+		configLoader.progressHandler = FileProgressing;
+		configLoader.okCancelPanel = okCancelPanel;
+		yield return configLoader.LoadConfig (name + "/config.xml");
+		progressPanel.Hide ();
 		Enabled = true;
-		if (!Config.forceBreak && !okCancelPanel.isCancel) {
+		if (!configLoader.forceBreak && !okCancelPanel.isCancel) {
 			Hashtable arg = new Hashtable ();
 			arg.Add ("name", name);
 			arg.Add ("data", Xml.GetChildByAttribute(layout.Element ("items"), "title", name));
@@ -107,17 +113,22 @@ public class SelectionSceneController : MonoBehaviour
 		}
 	}
 
-	void FileLoaded(int idx, int total){
-		if (idx == 0) {
-			progressPanel.Show (total);
-			return;
-		}
-		progressPanel.fileSize = Config.fileSize;
-		progressPanel.Load (idx);
-		if (idx == total) {
-			progressPanel.Hide ();
-		}
+	void FileProgressing(int idx, int total, float progress){
+		progressPanel.fileSize = configLoader.fileSize;
+		progressPanel.Show (idx, total, progress);
 	}
+
+//	void FileLoaded(int idx, int total){
+//		if (idx == 0) {
+//			progressPanel.Show (total);
+//			return;
+//		}
+//		progressPanel.fileSize = configLoader.fileSize;
+//		progressPanel.Load (idx);
+//		if (idx == total) {
+//			progressPanel.Hide ();
+//		}
+//	}
 
 	IEnumerator LoadIcon(string url, Image image){
 		//Debug.Log (Path.Combine ("file:////"+ Application.persistentDataPath, url));

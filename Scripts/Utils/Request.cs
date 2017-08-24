@@ -9,6 +9,7 @@ public class Request
 {
 	public static WWW current;
 	public static string RemoteUrl = "http://192.168.0.105:8080/web";
+	//public static Action<float> downloadProgressHandler;
 
 	//	public static IEnumerator ReadRemote (string str, Action<string> handler)
 	//	{
@@ -85,14 +86,20 @@ public class Request
 		}
 	}
 
-	public static IEnumerator DownloadFile (string src, string dest, bool absolute = false)
+	public static IEnumerator DownloadFile (string src, string dest, bool absolute = false, Action<float> progressHandler = null)
 	{
 		//
 		src = absolute ? src : Utils.ApplyRandomVersion (RemoteUrl + "/" + src);
 		Logger.Log ("Downloading " + src + " to " + dest);
 		WWW www = new WWW (src);
 		current = www;
-		yield return www;
+		while (current!=null && current.progress < 1) {
+			if (progressHandler != null)
+				progressHandler.Invoke (www.progress);
+			Debug.Log ("ssss");
+			yield return null;
+		}
+		yield return current;
 		dest = absolute ? dest : Path.Combine (Application.persistentDataPath, dest);
 		if (!Directory.Exists (Path.GetDirectoryName (dest)))
 			Directory.CreateDirectory (Path.GetDirectoryName (dest));
@@ -109,6 +116,7 @@ public class Request
 		if (current != null) {
 			//Logger.Log (current.isDone.ToString (), "blue");
 			current.Dispose ();
+			current = null;
 			//Logger.Log (current.isDone.ToString (), "blue");
 		}
 	}

@@ -43,7 +43,8 @@ public class Configuration : MonoBehaviour {
 
 	IEnumerator readConfig ()
 	{
-		yield return Config.LoadConfig ("ui/config.xml");
+		ConfigLoader loader = new ConfigLoader ();
+		yield return loader.LoadConfig ("ui/config.xml");
 		yield return Request.ReadPersistent ("ui/config.xml", str=>configStr = str);
 		if (!String.IsNullOrEmpty (configStr)) {
 			yield return I18n.Initialise (language);

@@ -11,7 +11,7 @@ public class ProgressPanel : MonoBehaviour
 	public ProgressBar bar;
 	public Text desc;
 	public Text btnText;
-	public int totalAssets;
+	//public int totalAssets;
 	public Action onCancelHandler;
 	public float fileSize;
 	//public int curretAssets;
@@ -19,15 +19,18 @@ public class ProgressPanel : MonoBehaviour
 	public void Start ()
 	{
 		btnText.text = I18n.Translate ("cancel");
+		bar.maxValue = 1f;
 	}
 
-	public void Show (int total = 5)
+	public void Show (int cur, int total, float progress)
 	{
-		totalAssets = total;
-		bar.maxValue = total;
-		Load (0);
+		//totalAssets = total;
+		//bar.maxValue = total;
+		//Load (0);
 		this.gameObject.SetActive (true);
-		desc.text = string.Format (I18n.Translate ("loading_desc"), "");
+		bar.SetValue (progress);
+		//desc.text = string.Format (I18n.Translate ("loading_desc"), "");
+		desc.text = string.Format (I18n.Translate ("loading_desc"), fileSize.ToString () + "M") + cur.ToString () + "/" + total.ToString ();
 	}
 
 	public void Hide ()
@@ -35,11 +38,11 @@ public class ProgressPanel : MonoBehaviour
 		this.gameObject.SetActive (false);
 	}
 
-	public void Load (int n)
-	{
-		bar.SetValue (n);
-		desc.text = string.Format (I18n.Translate ("loading_desc"), fileSize.ToString () + "M") + n.ToString () + "/" + totalAssets.ToString ();
-	}
+//	public void Load (int n)
+//	{
+//		bar.SetValue (n);
+//		desc.text = string.Format (I18n.Translate ("loading_desc"), fileSize.ToString () + "M") + n.ToString () + "/" + totalAssets.ToString ();
+//	}
 
 	public void OnCancelClick ()
 	{
