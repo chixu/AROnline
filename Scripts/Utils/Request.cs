@@ -26,7 +26,7 @@ public class Request
 	//	}
 
 
-	public static IEnumerator ReadRemote (string str, Action<string> handler)
+	public static IEnumerator ReadRemote (string str, Action<string> handler, Action failedHandler = null)
 	{
 		string url = RemoteUrl + "/" + str;
 		Logger.Log ("loading " + url);
@@ -35,6 +35,8 @@ public class Request
 		yield return www;
 		if (!String.IsNullOrEmpty (www.error)) {
 			Logger.Log ("unabled to load " + url);
+			if (failedHandler != null)
+				failedHandler.Invoke ();
 		} else {
 			Logger.Log ("Loaded successfully");
 			handler.Invoke (www.text);

@@ -17,12 +17,15 @@ public class OKCancelPanel : MonoBehaviour
 	public Text cancelText;
 	public bool isOK;
 	public bool isCancel;
+	public bool autoTranslate = true;
 	//public int curretAssets;
 
 	public void Start ()
 	{
-		okText.text = I18n.Translate (txtOK);
-		cancelText.text = I18n.Translate (txtCancel);
+		if (autoTranslate) {
+			okText.text = I18n.Translate (txtOK);
+			cancelText.text = I18n.Translate (txtCancel);
+		}
 	}
 
 	public void Reset(){

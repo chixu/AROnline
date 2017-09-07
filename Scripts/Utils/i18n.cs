@@ -25,7 +25,8 @@ public class I18n
 	}
 
 	public static string Translate(string key){
-		Logger.Log (key);
+		if (data == null)
+			return "";
 		XElement lang = data.Element (language);
 //		IEnumerable<XElement> eles = from el in lang.Elements ()
 //		                             where el.Attribute ("key") == key

@@ -2,8 +2,10 @@
 
 public class Version {
 	public int[] numbers;
+	private string versionString;
 
 	public Version(string str){
+		versionString = str;
 		string[] strs = str.Split ('.');
 		numbers = new int[strs.Length];
 		for (int i = 0; i < strs.Length; i++) {
@@ -50,5 +52,9 @@ public class Version {
 
 	public bool GreaterOrEqualThan(Version v){
 		return !LessThan (v);
+	}
+
+	public string ToString(){
+		return "Version: " + versionString;
 	}
 }

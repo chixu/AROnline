@@ -10,7 +10,7 @@ using System.Xml.Linq;
 public class Director {
 	public static string SCAN_OBJECT_PREFIX = "AR-";
 
-
+	public static Version version;
 	public static TrackerManager trackerManager;
 	public static UserBehavior userBehavior;
 	private static Dictionary<string, GameObject> prefabs = new Dictionary<string, GameObject> ();
