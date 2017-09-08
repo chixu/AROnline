@@ -96,7 +96,6 @@ public class Request
 		while (current!=null && current.progress < 1) {
 			if (progressHandler != null)
 				progressHandler.Invoke (www.progress);
-			Debug.Log ("ssss");
 			yield return null;
 		}
 		yield return current;

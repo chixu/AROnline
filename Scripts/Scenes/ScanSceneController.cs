@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 using Vuforia;
 using UnityEngine.SceneManagement;
 using System.Xml.Linq;
+using System.Reflection;
 
 public class ScanSceneController : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class ScanSceneController : MonoBehaviour
 	//	private Config remoteConfig;
 	private Mappings mappings;
 	//private string dataSetName = "trackings.xml";
-	private Dictionary<string, UnityEngine.Object> loadedAssets;
+	protected Dictionary<string, UnityEngine.Object> loadedAssets;
 	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
 	[HideInInspector]
 	public string sceneName;
@@ -41,14 +42,14 @@ public class ScanSceneController : MonoBehaviour
 	public XElement data;
 	[HideInInspector]
 	public bool exited = false;
-	private XElement itemInfos;
+	protected XElement itemInfos;
 
 	//info panel
 	public Text infoTitle;
 	public Text infoTip1;
 	public Text infoTip2;
 	public Text infoTip3;
-
+	private string type;
 
 	[System.Serializable]
 	public class Config
@@ -72,7 +73,7 @@ public class ScanSceneController : MonoBehaviour
 	}
 
 
-	string GetAssetsPath (string str, bool isFile = false)
+	protected string GetAssetsPath (string str, bool isFile = false)
 	{
 		if(string.IsNullOrEmpty(str)) return "";
 		return Request.ResolvePath (Application.persistentDataPath + "/" + sceneName + "/" + str, isFile);
@@ -81,11 +82,8 @@ public class ScanSceneController : MonoBehaviour
 	IEnumerator StartGame ()
 	{
 		loadedAssets = new Dictionary<string, UnityEngine.Object> ();
-
 		SetState ("idle");
-
 		yield return Request.ReadPersistent (sceneName + "/iteminfos.xml", str => itemInfos = XDocument.Parse (str).Root);
-
 		var abNodes = data.Element ("assetbundles").Nodes ();
 		foreach (XElement node in abNodes) {
 			AssetBundle bundle = null;
@@ -154,17 +152,19 @@ public class ScanSceneController : MonoBehaviour
 		state.OnEnter (args);
 	}
 
-	void Awake ()
+	protected virtual void Awake ()
 	{
 		instant = this;
-		subtitle = GetComponent<Subtitle> ();
 		sceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
+		type = SceneManagerExtension.GetSceneArguments () ["type"].ToString ();
 		data = SceneManagerExtension.GetSceneArguments () ["data"] as XElement;
-		Director.trackerManager.TrackEvent(TrackerEventName.SceneEnter, new Dictionary<string, object>(){{"Name", sceneName}});
 	}
 
-	void Start ()
+	protected virtual void Start ()
 	{
+		Logger.Log ("ScanSceneController start", "purple");
+		subtitle = GetComponent<Subtitle> ();
+		Director.trackerManager.TrackEvent(TrackerEventName.SceneEnter, new Dictionary<string, object>(){{"Name", sceneName}});
 		infoTitle.text = I18n.Translate ("tiptitle");
 		infoTip1.text = string.Format(I18n.Translate ("tip1"), I18n.Translate (sceneName + "_target"));
 		infoTip2.text = I18n.Translate ("tip2");
@@ -172,9 +172,8 @@ public class ScanSceneController : MonoBehaviour
 		StartCoroutine (StartGame ());
 	}
 
-	IEnumerator LoadDataSet ()
-	{
 
+	protected void ClearAndLoadDataSet(){
 		ObjectTracker objectTracker = Vuforia.TrackerManager.Instance.GetTracker<ObjectTracker> ();
 		objectTracker.DestroyAllDataSets (false);
 		objectTracker.Stop ();  // stop tracker so that we can add new dataset
@@ -191,10 +190,14 @@ public class ScanSceneController : MonoBehaviour
 			}
 		}
 
-		//int counter = 0;
-		GameObject buttonCanvasPrefab = null, buttonPrefab = null;// = Resources.Load("Prefab/ScanButtonCanvas") as GameObject;
+	}
 
+	protected virtual IEnumerator LoadDataSet ()
+	{
+		ClearAndLoadDataSet ();
+		//int counter = 0;
 		IEnumerable<TrackableBehaviour> tbs = Vuforia.TrackerManager.Instance.GetStateManager ().GetTrackableBehaviours ();
+		GameObject buttonCanvasPrefab = null, buttonPrefab = null;// = Resources.Load("Prefab/ScanButtonCanvas") as GameObject;
 		foreach (TrackableBehaviour tb in tbs) {
 
 			Logger.Log (tb.TrackableName, "purple");
@@ -302,13 +305,13 @@ public class ScanSceneController : MonoBehaviour
 //			}
 		}
 
-
+		ObjectTracker objectTracker = Vuforia.TrackerManager.Instance.GetTracker<ObjectTracker> ();
 		if (!objectTracker.Start ()) {
 			Debug.Log ("<color=yellow>Tracker Failed to Start.</color>");
 		}
 	}
 
-	GameObject InstantiateObject(TrackableBehaviour tb, UnityEngine.Object asset){
+	protected GameObject InstantiateObject(TrackableBehaviour tb, UnityEngine.Object asset){
 		if (asset != null) {
 			GameObject prefab = asset as GameObject;
 			GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);

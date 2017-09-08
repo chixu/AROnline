@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using System;
 
 public class SelectionItem : MonoBehaviour {
-
+	public string type;
 	public Text title;
 	public Text description;
 	public string helpLink;

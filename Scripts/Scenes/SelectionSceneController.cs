@@ -48,7 +48,6 @@ public class SelectionSceneController : MonoBehaviour
 				string title = Xml.Attribute (item, "title");
 				string help = Xml.Attribute (item, "help");
 				string icon = Xml.Attribute (item, "icon");
-				Debug.Log (item);
 				GameObject obj = GameObject.Instantiate (selectionItem);
 				//obj.transform.r
 				//obj.transform.parent = itemsPanel.gameObject.transform;
@@ -60,6 +59,7 @@ public class SelectionSceneController : MonoBehaviour
 
 				SelectionItem itemComp = obj.GetComponent<SelectionItem> ();
 				itemComp.name = title;
+				itemComp.type = Xml.Attribute (item, "type");
 				itemComp.title.text = I18n.Translate (title);
 				itemComp.description.text = I18n.Translate (desc);
 				itemComp.btnInfo.SetActive (false);// (!string.IsNullOrEmpty (help));
@@ -91,10 +91,11 @@ public class SelectionSceneController : MonoBehaviour
 
 	void OnItemClick(SelectionItem item){
 		//item.gameObject.GetComponent<Button> ().interactable = false;
-		StartCoroutine (OnItemClickHandler (item.name));
+		StartCoroutine (OnItemClickHandler (item));
 	}
 
-	IEnumerator OnItemClickHandler(string name){
+	IEnumerator OnItemClickHandler(SelectionItem item){
+		string name = item.name;
 		Logger.Log (name + " clicked");
 		okCancelPanel.Reset ();
 		Enabled = false;
@@ -107,6 +108,7 @@ public class SelectionSceneController : MonoBehaviour
 		Enabled = true;
 		if (!configLoader.forceBreak && !okCancelPanel.isCancel) {
 			Hashtable arg = new Hashtable ();
+			arg.Add ("type", item.type);
 			arg.Add ("name", name);
 			arg.Add ("data", Xml.GetChildByAttribute(layout.Element ("items"), "title", name));
 			SceneManagerExtension.LoadScene ("Scan", arg);

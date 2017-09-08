@@ -16,7 +16,6 @@ public class Xml
 
 	public static float Float(XElement node, string name, float def = 0){
 		if (node.Attribute (name) != null) {
-			Debug.Log (node.Attribute (name).Value);
 			return float.Parse(node.Attribute (name).Value);
 		}
 		return def;
