@@ -17,14 +17,17 @@ public class SelectionSceneController : MonoBehaviour
 	public Text phone;
 	public Text email;
 	public Text contactUs;
+	public List<GameObject> tabs;
+	public List<GameObject> tabButtons;
+	public int activeTabIndex = -1;
 	// Use this for initialization
 	private bool enabled = true;
-
 	private ConfigLoader configLoader;
+
 
 	void Start ()
 	{
-		AndroidStatusBar.statusBarState = AndroidStatusBar.States.Visible;
+		StatusBar.Show ();
 //		Debug.Log ("Start");
 		contactUs.text = I18n.Translate("select_contactus");
 		email.text = I18n.Translate("select_email");
@@ -34,6 +37,14 @@ public class SelectionSceneController : MonoBehaviour
 			configLoader.Cancel();
 			progressPanel.Hide();
 		};
+		for (int i = 0; i < tabButtons.Count; i++) {
+			GameObject button = tabButtons [i];
+			Button btn = button.GetComponentInChildren<Button> () as Button;
+			btn.onClick.AddListener (delegate {
+				OnTabClicked(button);
+			});
+		}
+		OnTabClicked (tabButtons[0]);
 		StartCoroutine (initScene ());
 	}
 
@@ -140,12 +151,34 @@ public class SelectionSceneController : MonoBehaviour
 		image.sprite = Sprite.Create(www.texture, new Rect(0,0,www.texture.width, www.texture.height), new Vector2(0,0));
 	}
 
-	void OnGUI ()
-	{
-//		for (int i = 0; i < selectionItems.Count; i++) {
-//			selectionItems [i].GetComponent<RectTransform> ().localPosition = Vector3.zero;
-//		}
+
+	void SelectTabButton(int idx, bool shown = true){
+		GameObject btn = tabButtons [idx];
+		Text text = btn.GetChildByName ("Text").GetComponent<Text> ();
+		Image icon = btn.GetChildByName ("Image").GetComponent<Image> ();
+		text.color = icon.color = shown ? Director.style.mainColor : Director.style.uiGrey;
 	}
+
+	void OnTabClicked(GameObject button){
+		Debug.Log (button.name);
+		int idx = tabButtons.IndexOf (button);
+		if (idx == activeTabIndex)
+			return;
+		activeTabIndex = idx;
+		for (int i = 0; i < tabs.Count; i++) {
+			tabs [i].SetActive (false);
+			SelectTabButton (i, false);
+		}
+		tabs [idx].SetActive (true);
+		SelectTabButton (idx);
+	}
+
+//	void OnGUI ()
+//	{
+////		for (int i = 0; i < selectionItems.Count; i++) {
+////			selectionItems [i].GetComponent<RectTransform> ().localPosition = Vector3.zero;
+////		}
+//	}
 
 	void LayoutLoaded (string str)
 	{

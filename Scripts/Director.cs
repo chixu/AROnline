@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 public class Director {
 	public static string SCAN_OBJECT_PREFIX = "AR-";
-
+	public static UIStyle style;
 	public static Version version;
 	public static TrackerManager trackerManager;
 	public static UserBehavior userBehavior;
@@ -17,6 +17,7 @@ public class Director {
 
 	public static void Initialize(XElement config){
 		trackerManager = new TrackerManager ();
+		style = new UIStyle ();
 		var trackers = config.Element ("trackers").Elements();
 		foreach (XElement n in trackers) {
 			string name = Xml.Attribute (n, "name");
@@ -76,4 +77,16 @@ public class Director {
 	public static IEnumerator Load(){
 		yield return userBehavior.Load ();
 	}
+}
+
+
+public class UIStyle{
+
+	public Color mainColor;
+	public Color uiGrey;
+
+	public UIStyle(){
+
+	}
+
 }

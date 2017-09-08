@@ -49,9 +49,9 @@ public class ScanSceneConfig : MonoBehaviour
 		if (string.IsNullOrEmpty (type))
 			return;
 		ScanSceneController scene = null;
-		if (type == "map")
-			scene = gameObject.AddComponent<MapScanScene> ();
-		else
+//		if (type == "map")
+//			scene = gameObject.AddComponent<MapScanScene> ();
+//		else
 			scene = gameObject.AddComponent<ScanSceneController> ();
 		if (scene != null) {
 			scene.videoPanel = videoPanel;

@@ -24,12 +24,15 @@ public class Configuration : MonoBehaviour {
 	public bool enablePopupVideo = true;
 	public Text message;
 	public Environment environment;
+	public Color mainColor;
+	public Color uiGrey;
 
 	public Image bg;
 	private bool loaded = false;
 	private bool timeToLoad = true;
 	private string configStr;
 	private bool versionLoaded = false;
+
 	// Use this for initialization
 	//	void Start () {
 	//		StartCoroutine (NextSceneAfterSeconds (5));
@@ -76,6 +79,8 @@ public class Configuration : MonoBehaviour {
 			yield return I18n.Initialise (language);
 			Director.Initialize (XDocument.Parse(configStr).Root);
 			yield return Director.Load ();
+			Director.style.mainColor = mainColor;
+			Director.style.uiGrey = uiGrey;
 			OnLoaded();
 		} else {
 			if (I18n.language == Language.Chinese) {

@@ -9,12 +9,16 @@ using UnityEngine;
 class StatusBar {
  
 	public static void Show(bool v = true){
-		UnityEditor.PlayerSettings.iOS.statusBarStyle = UnityEditor.iOSStatusBarStyle.Default;
+		//UnityEditor.PlayerSettings.iOS.statusBarStyle = UnityEditor.iOSStatusBarStyle.Default;
 		#if UNITY_IOS
 			
 		#endif
 		#if UNITY_ANDROID
-		AndroidStatusBar.statusBarState = v?AndroidStatusBar.States.Visible : AndroidStatusBar.States.Hidden;
+		AndroidStatusBar.statusBarState = v?AndroidStatusBar.States.VisibleOverContent : AndroidStatusBar.States.Hidden;
 		#endif
+	}
+
+	public static void Hide(){
+		Show (false);
 	}
 }
