@@ -24,6 +24,7 @@ public class SelectionSceneController : MonoBehaviour
 
 	void Start ()
 	{
+		AndroidStatusBar.statusBarState = AndroidStatusBar.States.Visible;
 //		Debug.Log ("Start");
 		contactUs.text = I18n.Translate("select_contactus");
 		email.text = I18n.Translate("select_email");
