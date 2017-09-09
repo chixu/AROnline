@@ -11,7 +11,7 @@ class StatusBar {
 	public static void Show(bool v = true){
 		//UnityEditor.PlayerSettings.iOS.statusBarStyle = UnityEditor.iOSStatusBarStyle.Default;
 		#if UNITY_IOS
-			
+		IOSStatusBar.Show(v);
 		#endif
 		#if UNITY_ANDROID
 		AndroidStatusBar.statusBarState = v?AndroidStatusBar.States.VisibleOverContent : AndroidStatusBar.States.Hidden;
