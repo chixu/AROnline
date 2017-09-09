@@ -38,6 +38,7 @@ public class ScanSceneConfig : MonoBehaviour
 	protected virtual void Awake ()
 	{
 		Debug.Log ("ScanSceneConfig Awake");
+		StatusBar.Hide ();
 		sceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
 		type = SceneManagerExtension.GetSceneArguments () ["type"].ToString ();
 		data = SceneManagerExtension.GetSceneArguments () ["data"] as XElement;
@@ -45,9 +46,9 @@ public class ScanSceneConfig : MonoBehaviour
 	}
 
 	public void ReplaceSceneController(){
-		Debug.Log (type);
-		if (string.IsNullOrEmpty (type))
-			return;
+//		Debug.Log (type);
+//		if (string.IsNullOrEmpty (type))
+//			return;
 		ScanSceneController scene = null;
 //		if (type == "map")
 //			scene = gameObject.AddComponent<MapScanScene> ();
@@ -64,5 +65,25 @@ public class ScanSceneConfig : MonoBehaviour
 			scene.infoTip2 = infoTip2;
 			scene.infoTip3 = infoTip3;
 		}
+	}
+
+	public void OnBackClick ()
+	{
+		ScanSceneController.instant.state.OnBackClick ();
+	}
+
+	public void OnInfoClick ()
+	{
+		ScanSceneController.instant.infoPanel.SetActive (!infoPanel.activeSelf);
+	}
+
+	public void OnInfoLinkClick ()
+	{
+		Application.OpenURL (Request.RemoteUrl + I18n.Translate(sceneName+"_infolink") );
+	}
+
+	public void OnInfoCloseClick ()
+	{
+		ScanSceneController.instant.infoPanel.SetActive (false);
 	}
 }

@@ -49,6 +49,8 @@ public class ScanSceneController : MonoBehaviour
 	public Text infoTip1;
 	public Text infoTip2;
 	public Text infoTip3;
+	[HideInInspector]
+	public GameObject scanner;
 	private string type;
 
 	[System.Serializable]
@@ -163,6 +165,7 @@ public class ScanSceneController : MonoBehaviour
 	protected virtual void Start ()
 	{
 		Logger.Log ("ScanSceneController start", "purple");
+		scanner = GameObject.Find ("Scanner");
 		subtitle = GetComponent<Subtitle> ();
 		Director.trackerManager.TrackEvent(TrackerEventName.SceneEnter, new Dictionary<string, object>(){{"Name", sceneName}});
 		infoTitle.text = I18n.Translate ("tiptitle");
@@ -387,27 +390,6 @@ public class ScanSceneController : MonoBehaviour
 
 	public void ShowVideoSlide(){
 		ShowDescription (false);
-	}
-
-
-	public void OnBackClick ()
-	{
-		state.OnBackClick ();
-	}
-
-	public void OnInfoClick ()
-	{
-		infoPanel.SetActive (!infoPanel.activeSelf);
-	}
-
-	public void OnInfoLinkClick ()
-	{
-		Application.OpenURL (Request.RemoteUrl + I18n.Translate(sceneName+"_infolink") );
-	}
-
-	public void OnInfoCloseClick ()
-	{
-		infoPanel.SetActive (false);
 	}
 
 //	public void OnInfoNotShowAgainClick ()

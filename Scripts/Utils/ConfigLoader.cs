@@ -65,8 +65,7 @@ public class ConfigLoader
 			string preVersion = Xml.Attribute (remoteConfig, "preversion");
 			string remoteVersion = Xml.Version (remoteConfig);
 			//float filesize = Xml.Float(remoteConfig, "size");
-			//if (localVersion != remoteVersion) {
-			if(true){
+			if (localVersion != remoteVersion) {
 				//fileSize = Xml.Float(remoteConfig.Element ("update"), "size");
 				var nodes = remoteConfig.Element ("update").Elements();
 				//List<string> updates = new List<string> ();

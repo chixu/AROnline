@@ -20,6 +20,11 @@ public class SelectionSceneController : MonoBehaviour
 	public List<GameObject> tabs;
 	public List<GameObject> tabButtons;
 	public int activeTabIndex = -1;
+	public GameObject header;
+
+	//public GameObject contentBg;
+	private Camera ARCamera;
+	private Camera normalCamera;
 	// Use this for initialization
 	private bool enabled = true;
 	private ConfigLoader configLoader;
@@ -27,9 +32,10 @@ public class SelectionSceneController : MonoBehaviour
 
 	void Start ()
 	{
-		StatusBar.Show ();
+		ARCamera = GameObject.Find ("ARCamera").GetComponentInChildren<Camera>(true); 
+		normalCamera = GameObject.Find ("Camera").GetComponent<Camera>();
 //		Debug.Log ("Start");
-		contactUs.text = I18n.Translate("select_contactus");
+		contactUs.text = I18n.Translate("select_cooperate");
 		email.text = I18n.Translate("select_email");
 		phone.text = I18n.Translate("select_phone");
 		selectionItems = new List<GameObject> ();
@@ -43,6 +49,8 @@ public class SelectionSceneController : MonoBehaviour
 			btn.onClick.AddListener (delegate {
 				OnTabClicked(button);
 			});
+			Text txt = button.GetComponentInChildren<Text> () as Text;
+			txt.text = I18n.Translate ("select_tab" + i);
 		}
 		OnTabClicked (tabButtons[0]);
 		StartCoroutine (initScene ());
@@ -66,7 +74,7 @@ public class SelectionSceneController : MonoBehaviour
 				//obj.GetComponent<RectTransform> ().localPosition = Vector3.zero;
 				obj.transform.SetParent(itemsPanel.transform, false);
 				RectTransform rectT = obj.GetComponent<RectTransform> ();
-				rectT.localPosition = new Vector3 (rectT.localPosition.x, rectT.localPosition.y-170 * index);
+				rectT.localPosition = new Vector3 (rectT.localPosition.x, rectT.localPosition.y-168 * index);
 				selectionItems.Add (obj);
 
 				SelectionItem itemComp = obj.GetComponent<SelectionItem> ();
@@ -171,6 +179,11 @@ public class SelectionSceneController : MonoBehaviour
 		}
 		tabs [idx].SetActive (true);
 		SelectTabButton (idx);
+		normalCamera.gameObject.SetActive (idx != 1);
+		ARCamera.gameObject.SetActive (idx == 1);
+		header.GetComponent<Image> ().enabled = idx != 1;
+		header.GetComponentInChildren<Text> ().text = I18n.Translate ("select_title" + idx);
+		StatusBar.Show (idx != 1);
 	}
 
 //	void OnGUI ()
