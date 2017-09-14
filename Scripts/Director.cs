@@ -9,6 +9,7 @@ using System.Xml.Linq;
 
 public class Director {
 	public static string SCAN_OBJECT_PREFIX = "AR-";
+	public static Environment environment;
 	public static UIStyle style;
 	public static Version version;
 	public static TrackerManager trackerManager;

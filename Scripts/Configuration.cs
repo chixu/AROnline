@@ -40,6 +40,7 @@ public class Configuration : MonoBehaviour {
 
 	void Awake(){
 		Director.version = new Version (version);
+		Director.environment = environment;
 		Configuration.instant = this;
 		if (environment == Environment.Development) {
 			Request.RemoteUrl = devRemoteUrl;
