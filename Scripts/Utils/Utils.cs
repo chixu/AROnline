@@ -40,4 +40,11 @@ public class Utils : MonoBehaviour {
 	public static string ApplyRandomVersion (string str){
 		return str + "?v=" + UnityEngine.Random.Range(100000,999999).ToString ();
 	}
+
+	//-40 mod 90 = 50
+	public static float ModPositive(float a, float b){
+		int i = 0;
+		i = Mathf.FloorToInt (a / b);
+		return a - b * i;
+	}
 }

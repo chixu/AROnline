@@ -363,6 +363,14 @@ public class ScanSceneController : MonoBehaviour
 		CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
 		GameObject obj = InstantiateObject (tb, asset);
 		obj.AddComponent<TouchRotate> ();
+		TouchRotate touchrotate = obj.GetComponent<TouchRotate> ();
+		touchrotate.scalable = Xml.Boolean (info, "scalable", true);
+		touchrotate.upEnabled = Xml.Boolean (info, "upEnabled", true); 
+		touchrotate.upDireciton = Xml.Attribute (info, "upDirection", "x"); 
+		touchrotate.rightEnabled = Xml.Boolean (info, "rightEnabled", true); 
+		touchrotate.rightDirection = Xml.Attribute (info, "rightDirection", "-z"); 
+		ITrackableController[] controllers = obj.GetComponents<ITrackableController> ();
+		cte.controllers.AddRange (controllers);
 		for (int i = 0; i < buttons.Count; i++) {
 			buttons [i].target = obj;
 			cte.controllers.Add (buttons [i]);

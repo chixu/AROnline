@@ -7,11 +7,20 @@ using System;
 
 public class Xml
 {
-	public static string Attribute(XElement node, string name){
+	public static string Attribute(XElement node, string name, string def = ""){
 		if (node.Attribute (name) != null) {
 			return node.Attribute (name).Value;
 		}
-		return "";
+		return def;
+	}
+
+
+	public static bool Boolean(XElement node, string name, bool def = false){
+		string str = Attribute (node, name);
+		if (string.IsNullOrEmpty (str))
+			return def;
+		else
+			return str.ToLower() == "true" || str == "1";
 	}
 
 	public static float Float(XElement node, string name, float def = 0){
