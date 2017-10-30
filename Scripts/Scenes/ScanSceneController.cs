@@ -91,7 +91,7 @@ public class ScanSceneController : MonoBehaviour
 			AssetBundle bundle = null;
 			string abName = Xml.Attribute (node, "src");
 			string keyName = sceneName + "_" + abName;
-			Logger.Log (abName + " " + keyName, "blue");
+			Logger.Log ("assetbundles " + abName + " " + keyName, "green");
 			if (!AssetBundleManager.bundles.ContainsKey (keyName)) {
 				Logger.Log (GetAssetsPath (abName, true), "purple");
 				WWW www = new WWW (GetAssetsPath (abName, true));
@@ -139,7 +139,7 @@ public class ScanSceneController : MonoBehaviour
 		Logger.Log (str, "blue");
 	}
 
-	public void SetState (string name, Hashtable args = null)
+	public virtual void SetState (string name, Hashtable args = null)
 	{
 		if (state != null && state.name == name) {
 			return;
@@ -410,6 +410,7 @@ public class ScanSceneController : MonoBehaviour
 	//			text.text += "\n" + str;
 	//	}
 	void Update(){
+		if(state!=null)
 		state.Update ();
 	}
 }

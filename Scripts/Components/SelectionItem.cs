@@ -13,6 +13,7 @@ public class SelectionItem : MonoBehaviour {
 	public Image image;
 	public GameObject btnInfo;
 	private Action<SelectionItem> onClickHandler;
+	public string nextSceneName;
 	// Use this for initialization
 
 

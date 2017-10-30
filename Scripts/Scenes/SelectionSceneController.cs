@@ -78,6 +78,7 @@ public class SelectionSceneController : MonoBehaviour
 				selectionItems.Add (obj);
 
 				SelectionItem itemComp = obj.GetComponent<SelectionItem> ();
+				itemComp.nextSceneName = Xml.Attribute (item, "next", "Scan");
 				itemComp.name = title;
 				itemComp.type = Xml.Attribute (item, "type");
 				itemComp.title.text = I18n.Translate (title);
@@ -131,7 +132,7 @@ public class SelectionSceneController : MonoBehaviour
 			arg.Add ("type", item.type);
 			arg.Add ("name", name);
 			arg.Add ("data", Xml.GetChildByAttribute(layout.Element ("items"), "title", name));
-			SceneManagerExtension.LoadScene ("Scan", arg);
+			SceneManagerExtension.LoadScene (item.nextSceneName, arg);
 		}
 	}
 
